@@ -12,6 +12,11 @@ model_path = os.path.join(settings.MEDIA_ROOT, "trained_model")
 model = jb.load(model_path)
 
 
+def home(request):
+    if request.method == "GET":
+        return JsonResponse({"message": "This just home page"})
+
+
 @csrf_exempt
 def predictDisease(request):
     if request.metho == "POST":
