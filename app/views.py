@@ -19,7 +19,7 @@ def home(request):
 
 @csrf_exempt
 def predictDisease(request):
-    if request.metho == "POST":
+    if request.method == "POST":
         diseaselist = [
             "Fungal infection",
             "Allergy",
