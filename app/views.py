@@ -1,12 +1,15 @@
 from django.http.response import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 import json
-import matplotlib.pyplot as plt
-
-# loading trained_model
+import os
+from django.conf import settings
 import joblib as jb
 
-model = jb.load("trained_model")
+
+# loading trained_model
+
+model_path = os.path.join(settings.MEDIA_ROOT, "trained_model")
+model = jb.load(model_path)
 
 
 @csrf_exempt
@@ -191,9 +194,6 @@ def predictDisease(request):
             "yellow_crust_ooze",
         ]
 
-        alphabaticsymptomslist = sorted(symptomslist)
-        print(request.POST["symptoms"])
-
         psymptomsList = json.loads(request.POST["symptoms"])
         psymptoms = [symptom["value"] for symptom in psymptomsList]
         if len(psymptoms) > 7:
@@ -205,7 +205,6 @@ def predictDisease(request):
                     "consultdoctor": "None",
                 }
             )
-        # print(psymptoms)
         if not psymptoms:
             return JsonResponse(
                 {
