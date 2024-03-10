@@ -198,21 +198,34 @@ def predictDisease(request):
             "red_sore_around_nose",
             "yellow_crust_ooze",
         ]
+        print(request.POST)
+        try:
+            psymptomsList = json.loads(request.POST["symptoms"])
+            psymptoms = [symptom["value"] for symptom in psymptomsList]
+        except:
+            return JsonResponse({"message": "Couldn't parse input data"})
 
-        psymptomsList = json.loads(request.POST["symptoms"])
-        psymptoms = [symptom["value"] for symptom in psymptomsList]
-        if len(psymptoms) > 7:
+        if not psymptoms:
             return JsonResponse(
                 {
-                    "message": "symptoms exceeded the number limit",
                     "predicteddisease": "None",
                     "confidencescore": 0,
                     "consultdoctor": "None",
                 }
             )
-        if not psymptoms:
+        if len(psymptoms) < 2:
             return JsonResponse(
                 {
+                    "message": "Please provide atleast 3 symptoms!",
+                    "predicteddisease": "None",
+                    "confidencescore": 0,
+                    "consultdoctor": "None",
+                }
+            )
+        if len(psymptoms) > 7:
+            return JsonResponse(
+                {
+                    "message": "Symptoms exceeded the number limit",
                     "predicteddisease": "None",
                     "confidencescore": 0,
                     "consultdoctor": "None",
@@ -328,11 +341,15 @@ def predictDisease(request):
         else:
             consultdoctor = "other"
 
-        response = {
-            "predicteddisease": predicted_disease,
-            "confidencescore": confidencescore,
-            "consultdoctor": consultdoctor,
-        }
+        if not confidencescore <= 60:
+
+            response = {
+                "predicteddisease": predicted_disease,
+                "confidencescore": confidencescore,
+                "consultdoctor": consultdoctor,
+            }
+        else:
+            return JsonResponse({"message": "Confidence is less than 60%"}, status=422)
         print("RESPONSE------------------------\n", response)
         return JsonResponse(response)
     else:
