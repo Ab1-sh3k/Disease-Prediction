@@ -220,7 +220,8 @@ def predictDisease(request):
                     "predicteddisease": "None",
                     "confidencescore": 0,
                     "consultdoctor": "None",
-                }
+                },
+                status=202,
             )
         if len(psymptoms) > 7:
             return JsonResponse(
