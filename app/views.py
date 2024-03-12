@@ -204,7 +204,6 @@ def predictDisease(request):
             psymptoms = [symptom["value"] for symptom in psymptomsList]
         except:
             return JsonResponse({"message": "Couldn't parse input data"})
-
         if not psymptoms:
             return JsonResponse(
                 {
@@ -213,7 +212,7 @@ def predictDisease(request):
                     "consultdoctor": "None",
                 }
             )
-        if len(psymptoms) < 2:
+        if len(psymptoms) < 3:
             return JsonResponse(
                 {
                     "message": "Please provide atleast 3 symptoms!",
